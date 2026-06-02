@@ -13,7 +13,7 @@ public static class DiffHelper
     public static IEnumerable<FileSystemItem> GetModifiedFileSystemItem(IEnumerable<FileSystemItem> prev, IEnumerable<FileSystemItem> current)
     {
         return current
-            .Select(i => new { Current = i, Previous = prev.SingleOrDefault(p => p == i) })
+            .Select(i => new { Current = i, Previous = prev.SingleOrDefault(p => p.Equals(i)) })
             .Where(x => x.Previous != null && (x.Current.Size != x.Previous.Size))
             .Select(x =>
             {  
