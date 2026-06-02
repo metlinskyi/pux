@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../pux.csproj" />
+    <ProjectReference Include="../Src/pux.csproj" />
   </ItemGroup>
 
 </Project>

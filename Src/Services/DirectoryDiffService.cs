@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using static DiffHelper;
 
 internal class DirectoryDiffService(ISnapshotService snapshotService) : IDirectoryDiffService
 {
@@ -21,8 +22,8 @@ internal class DirectoryDiffService(ISnapshotService snapshotService) : IDirecto
 
     private void CreateDiff(DirectoryDiff diff, FileSystemItem[] prevSnapshot, FileSystemItem[] currentSnapshot)
     {
-        var newItems = DiffHelper.GetNewFileSystemItem(prevSnapshot, currentSnapshot).ToArray();
-        var deletedItems = DiffHelper.GetDeletedFileSystemItem(prevSnapshot, currentSnapshot).ToArray();
+        var newItems = GetNewFileSystemItem(prevSnapshot, currentSnapshot).ToArray();
+        var deletedItems = GetDeletedFileSystemItem(prevSnapshot, currentSnapshot).ToArray();
 
         diff.NewFiles = newItems
             .Where(i => i.Type == FileSystemType.File)
@@ -44,7 +45,7 @@ internal class DirectoryDiffService(ISnapshotService snapshotService) : IDirecto
             .Select(i => i.ToString())
             .ToArray();
 
-        diff.ModifiedFiles = DiffHelper.GetModifiedFileSystemItem(prevSnapshot, currentSnapshot)
+        diff.ModifiedFiles = GetModifiedFileSystemItem(prevSnapshot, currentSnapshot)
             .Where(i => i.Type == FileSystemType.File)
             .Select(i => new FileDto { FullName = i.FullName, Version = i.Version })
             .ToArray();
