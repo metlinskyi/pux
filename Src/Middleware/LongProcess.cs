@@ -35,6 +35,8 @@ internal class LongProcess<T>(IHttpContextAccessor accessor) : ILongProcess<T>
         string json = JsonSerializer.Serialize<T>(task.Result);
         await context.Response.WriteAsync(json);
 
+        tasks.TryRemove(id, out _);
+
         return task.Result;
     }
 
