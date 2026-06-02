@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 public static class Directory
 {
-    public static void GetDirectory(this WebApplication app)
+    public static void MapDirectoryEndpoints(this WebApplication app)
     {
         app.MapPost("/directory/diff", async (
             [FromBody]string path, 

@@ -16,5 +16,5 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.GetDirectory();
+app.MapDirectoryEndpoints();
 app.Run();
