@@ -29,7 +29,7 @@ Send a directory path in the request body to schedule a diff calculation.
 Example:
 
 ```bash
-curl -X POST https://localhost:5001/directory/diff \
+curl -X POST https://localhost:8080/directory/diff \
   -H "Content-Type: application/json" \
   -d '"/path/to/directory"' -i
 ```
