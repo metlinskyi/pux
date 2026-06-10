@@ -1,20 +1,34 @@
-var builder = WebApplication.CreateBuilder(args);
+using Microsoft.AspNetCore.Http.Timeouts;
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions {
+    Args = args,
+    WebRootPath = "../Web/"
+});
 builder.Services.AddOpenApi();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton(typeof(ILongProcess<>), typeof(LongProcess<>));
 builder.Services.AddSingleton<IDirectoryDiffService, DirectoryDiffService>();
 builder.Services.AddTransient<ISnapshotService, SnapshotService>();
+builder.Services.AddCors(___ => {
+    ___.AddPolicy(name: "*",
+                      policy  => policy
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()   
+                    );
+});
+builder.Services.AddRequestTimeouts(options => {
+    options.DefaultPolicy = new RequestTimeoutPolicy { 
+        Timeout = TimeSpan.FromSeconds(1) 
+    };
+});
 var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
-
-app.UseHttpsRedirection();
+app.UseRequestTimeouts();
+app.UseCors("*");
+app.UseDefaultFiles(new DefaultFilesOptions {
+    DefaultFileNames = ["index.html"]
+});
+app.UseStaticFiles();
+app.MapOpenApi();
 app.MapDirectoryEndpoints();
 app.Run();

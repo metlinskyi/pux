@@ -1,0 +1,46 @@
+<script>
+document.addEventListener("DOMContentLoaded", () => { 
+   Array.from(document.getElementsByTagName("form"))
+        .forEach(form => form.addEventListener("submit", async (event) => 
+        {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            const endpoint = event.target.action;
+            var object = {};
+            new FormData(event.target).forEach(function(value, key){
+                object[key] = value;
+            });
+            var payload = JSON.stringify(object);
+            try {
+                const response = await fetch(endpoint, {
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    method: event.target.method.toUpperCase(),
+                    body: payload,
+                });
+                console.log(await response.json());
+            } catch (e) {
+                alert(e);
+            }
+            return false;
+        }));
+}); 
+</script>
+
+<fieldset>
+    <caption>Async</caption>
+<form action="/directory/diff" method="post">
+    <input type="text" name="Path" value="/home/int/Projects/pux/1" />
+    <input type="submit"/>
+</form>
+</fieldset>
+
+<fieldset>
+    <caption>Sync</caption>
+    <form action="/directory/diff/sync" method="post">
+        <input type="text" name="Path" value="/home/int/Projects/pux/1" />
+        <input type="submit"/>
+    </form>
+</fieldset>

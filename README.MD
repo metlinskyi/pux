@@ -36,6 +36,17 @@ curl -X POST https://localhost:8080/directory/diff \
 
 The service returns the diff result once it is ready.
 
+## Docker
+
+```
+docker run -d \
+    --name api \
+    --network=metlinskyi \
+    -h api \
+    -p 8081:8081 \
+    -p 8082:8082 \
+    metlinskyi/com:api-development
+```
 ## Notes
 
 - The main application project is located in `Src/pux.csproj`.
