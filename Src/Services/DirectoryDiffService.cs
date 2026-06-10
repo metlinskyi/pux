@@ -5,10 +5,10 @@ internal class DirectoryDiffService(ISnapshotService snapshotService) : IDirecto
 {
     private readonly ConcurrentDictionary<string, FileSystemItem[]> _cache = new ();
 
-    public async Task<DirectoryDiff?> GetDirectoryDiffAsync(DirectoryInfo directory)
+    public async Task<DirectoryDiff?> GetDirectoryDiffAsync(DirectoryInfo directory, CancellationToken token)
     {        
         // Emulation of long process
-        await Task.Delay(TimeSpan.FromSeconds(10));
+        await Task.Delay(TimeSpan.FromSeconds(10), token);
 
         DirectoryDiff? diff = new ();
 

@@ -7,34 +7,37 @@ public static class Directory
         app.MapPost("/directory/diff/async", async (
             [FromBody]DirectoryRecord request, 
             ILongProcess<DirectoryDiff?> longProcess,
-            IDirectoryDiffService directoryDiff) =>
+            IDirectoryDiffService directoryDiff,
+            HttpContext context) =>
         {
             DirectoryInfo directory = new(request.Path);
             if(directory.Exists == false)
                return Results.NotFound();
 
-            var id = longProcess.Allocate(directoryDiff.GetDirectoryDiffAsync(directory));
+            var id = longProcess.Allocate(directoryDiff.GetDirectoryDiffAsync(directory, context.RequestAborted));
 
             return Results.RedirectToRoute("DirectoryDiffResult", new { id });
         });
 
         app.MapGet("/directory/diff/{id}", async (
             Guid id, 
-            ILongProcess<DirectoryDiff?> longProcess) =>
+            ILongProcess<DirectoryDiff?> longProcess,
+            HttpContext context) =>
         {
-            await longProcess.WaitForAsync(id);
+            await longProcess.WaitForAsync(id, context.RequestAborted);
         })
         .WithName("DirectoryDiffResult");
 
         app.MapPost("/directory/diff/sync", async (
             [FromBody]DirectoryRecord request, 
-            IDirectoryDiffService directoryDiff) =>
+            IDirectoryDiffService directoryDiff,
+            HttpContext context) =>
         {
             DirectoryInfo directory = new(request.Path);
             if(directory.Exists == false)
                return Results.NotFound();
-
-            return Results.Ok(await directoryDiff.GetDirectoryDiffAsync(directory));
+            
+            return Results.Ok(await directoryDiff.GetDirectoryDiffAsync(directory, context.RequestAborted));
         });
     }
 }

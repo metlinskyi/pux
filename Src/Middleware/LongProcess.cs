@@ -15,7 +15,7 @@ internal class LongProcess<T>(IHttpContextAccessor accessor) : ILongProcess<T>
         return id;
     }
 
-    public async Task<T> WaitForAsync(Guid id)
+    public async Task<T> WaitForAsync(Guid id, CancellationToken token)
     {       
         var context = accessor.HttpContext ?? throw new InvalidOperationException("HttpContext is not available.");
 
