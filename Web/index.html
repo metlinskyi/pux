@@ -7,18 +7,17 @@ document.addEventListener("DOMContentLoaded", () => {
             event.stopPropagation();
             
             const endpoint = event.target.action;
-            var object = {};
+            var payload = {};
             new FormData(event.target).forEach(function(value, key){
-                object[key] = value;
+                payload[key] = value;
             });
-            var payload = JSON.stringify(object);
             try {
                 const response = await fetch(endpoint, {
                     headers: {
                         "Content-Type": "application/json"
                     },
                     method: event.target.method.toUpperCase(),
-                    body: payload,
+                    body: JSON.stringify(payload),
                 });
                 console.log(await response.json());
             } catch (e) {
@@ -31,16 +30,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 <fieldset>
     <caption>Async</caption>
-<form action="/directory/diff" method="post">
-    <input type="text" name="Path" value="/home/int/Projects/pux/1" />
-    <input type="submit"/>
-</form>
+    <form action="/directory/diff/async" method="post">
+        <input type="text" name="Path" value="/Web" />
+        <input type="submit"/>
+    </form>
 </fieldset>
 
 <fieldset>
     <caption>Sync</caption>
     <form action="/directory/diff/sync" method="post">
-        <input type="text" name="Path" value="/home/int/Projects/pux/1" />
+        <input type="text" name="Path" value="/Web" />
         <input type="submit"/>
     </form>
 </fieldset>

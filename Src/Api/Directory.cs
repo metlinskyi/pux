@@ -4,7 +4,7 @@ public static class Directory
 {
     public static void MapDirectoryEndpoints(this WebApplication app)
     {
-        app.MapPost("/directory/diff", async (
+        app.MapPost("/directory/diff/async", async (
             [FromBody]DirectoryRecord request, 
             ILongProcess<DirectoryDiff?> longProcess,
             IDirectoryDiffService directoryDiff) =>
@@ -25,7 +25,6 @@ public static class Directory
             await longProcess.WaitForAsync(id);
         })
         .WithName("DirectoryDiffResult");
-
 
         app.MapPost("/directory/diff/sync", async (
             [FromBody]DirectoryRecord request, 

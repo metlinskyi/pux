@@ -5,7 +5,6 @@ RUN apk add --no-cache \
     build-base \
     zlib-dev 
 
-
 WORKDIR /src
 
 # Copy project file and restore dependencies
@@ -14,7 +13,6 @@ RUN dotnet restore
 
 # Copy remaining source code
 COPY Src/ .
-
 
 # Publish the application with AOT compilation
 RUN dotnet publish pux.csproj -c Release -o /app/publish \
@@ -30,7 +28,8 @@ RUN apk add --no-cache \
     libstdc++ \
     libgcc \
     libintl \
-    icu-libs
+    icu-libs \
+    curl
 
 # Copy the published application from build stage
 COPY --from=build /app/publish .
@@ -38,15 +37,20 @@ COPY --from=build /app/publish .
 # Create a non-root user to run the application
 RUN addgroup -g 1000 appuser && \
     adduser -D -u 1000 -G appuser appuser && \
-    chown -R appuser:appuser /app
+    chown -R appuser:appuser /app 
+
+RUN mkdir /Web && chown -R appuser:appuser /Web
 
 USER appuser
 
+EXPOSE 8080
+
 ARG  environment=Production
 # Set environment variables
-#ENV ASPNETCORE_URLS=http://+:8081
+ENV ASPNETCORE_URLS=http://+:8080
 ENV DOTNET_RUNNING_IN_CONTAINER=true
 ENV ASPNETCORE_ENVIRONMENT=$environment 
+
 
 # Run the application
 ENTRYPOINT ["./pux"]
