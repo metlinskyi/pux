@@ -39,6 +39,9 @@ The service returns the diff result once it is ready.
 ## Docker
 
 ```bash
+docker build --pull --rm -f "dockerfile" -t pux "."
+```
+```bash
 docker run -d -p 8080:8080 -v ./Web/:/Web/:ro pux:latest 
 ```
 ## Notes
