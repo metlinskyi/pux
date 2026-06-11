@@ -6,7 +6,8 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions {
 });
 builder.Services.AddOpenApi();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddSingleton(typeof(ILongProcess<>), typeof(LongProcess<>));
+builder.Services.AddSingleton<IBackgroundProcess, BackgroundProcess>();
+builder.Services.AddSingleton<IBackgroundTasks, BackgroundTasks>();
 builder.Services.AddSingleton<IDirectoryDiffService, DirectoryDiffService>();
 builder.Services.AddTransient<ISnapshotService, SnapshotService>();
 builder.Services.AddCors(___ => {
@@ -19,7 +20,7 @@ builder.Services.AddCors(___ => {
 });
 builder.Services.AddRequestTimeouts(options => {
     options.DefaultPolicy = new RequestTimeoutPolicy { 
-        Timeout = TimeSpan.FromSeconds(1) 
+        Timeout = TimeSpan.FromSeconds(2) 
     };
 });
 var app = builder.Build();
@@ -31,4 +32,5 @@ app.UseDefaultFiles(new DefaultFilesOptions {
 app.UseStaticFiles();
 app.MapOpenApi();
 app.MapDirectoryEndpoints();
+app.MapBackgroundEndpoints();
 app.Run();

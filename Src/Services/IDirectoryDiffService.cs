@@ -1,4 +1,4 @@
 public interface IDirectoryDiffService
 {
-    Task<DirectoryDiff?> GetDirectoryDiffAsync(DirectoryInfo directory, CancellationToken token);
+    Task<DirectoryDiff> GetDirectoryDiffAsync(DirectoryInfo directory, CancellationToken token);
 }
