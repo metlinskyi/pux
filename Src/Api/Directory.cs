@@ -6,7 +6,7 @@ public static class Directory
     {
         app.MapPost("/directory/diff/async", async (
             [FromBody]DirectoryRecord request, 
-            [FromServices]IDirectoryDiffService directoryDiff,
+            [FromServices]IDirectoryDiffService service,
             [FromServices]IBackgroundProcess background,
             CancellationToken ct) =>
         {
@@ -14,21 +14,21 @@ public static class Directory
             if(directory.Exists == false)
                return Results.NotFound();
 
-            var id = background.Allocate(directoryDiff.GetDirectoryDiffAsync(directory, ct));
+            var id = background.Allocate(service.GetDirectoryDiffAsync(directory, ct));
             
             return Results.RedirectToRoute("GetBackgroundResult", new { id });
         });
 
         app.MapPost("/directory/diff/sync", async (
             [FromBody]DirectoryRecord request, 
-            [FromServices]IDirectoryDiffService directoryDiff,
+            [FromServices]IDirectoryDiffService service,
             CancellationToken ct) =>
         {
             DirectoryInfo directory = new(request.Path);
             if(directory.Exists == false)
                return Results.NotFound();
             
-            return Results.Ok(await directoryDiff.GetDirectoryDiffAsync(directory, ct));
+            return Results.Ok(await service.GetDirectoryDiffAsync(directory, ct));
         });
     }
 }
