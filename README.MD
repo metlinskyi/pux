@@ -22,14 +22,14 @@ dotnet test Tests/Tests.csproj
 
 The application exposes a minimal API for directory diff operations.
 
-### POST /directory/diff
+### POST /directory/diff/async
 
 Send a directory path in the request body to schedule a diff calculation.
 
 Example:
 
 ```bash
-curl -X POST http://localhost:8080/directory/diff \
+curl -X POST http://localhost:8080/directory/diff/async \
   -H "Content-Type: application/json" \
   -d '{"Path":"/Web"}' -i
 ```
