@@ -3,7 +3,7 @@ using System.Text.Json;
 
 internal class LongProcess<T>(IHttpContextAccessor accessor) : ILongProcess<T>
 {
-    private const int delay = 1000;
+    private TimeSpan delay = TimeSpan.FromMilliseconds(500);
 
     private readonly ConcurrentDictionary<Guid, Task<T>> tasks = new();
 
@@ -28,6 +28,7 @@ internal class LongProcess<T>(IHttpContextAccessor accessor) : ILongProcess<T>
         
         while (task.IsCompleted == false)
         {
+            await context.Response.WriteAsync(" ");
             await context.Response.Body.FlushAsync();
             await Task.Delay(delay);
         }
