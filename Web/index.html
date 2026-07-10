@@ -45,14 +45,10 @@ document.addEventListener("DOMContentLoaded", () => {
                         progress.remove();
                     });
                 }
-                if(response.status === 200)
+                else if(response.status === 200)
                 {
-                    response.json().then(data => {
-                        const er = document.createElement("div")
-                        er.className = "state";
-                        er.innerText = data;
-                        form.appendChild(er);
-                    });
+                    const data = await response.json();
+                    console.log(data);
                 }
                 else
                 {
