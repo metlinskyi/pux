@@ -1,30 +1,35 @@
 using System.Collections.Concurrent;
 using static DiffHelper;
 
-internal class DirectoryDiffService(ISnapshotService snapshotService) : IDirectoryDiffService
+internal class DirectoryDiffService(
+    ISnapshotService snapshotService
+    ) : ConcurrentDictionary<string, FileSystemItem[]>, IDirectoryDiffService
 {
-    private readonly ConcurrentDictionary<string, FileSystemItem[]> _cache = new ();
-
     public async Task<DirectoryDiff> GetDirectoryDiffAsync(DirectoryInfo directory, CancellationToken token)
     {    
-        // Emulation of long process
-        await Task.Delay(TimeSpan.FromSeconds(10), token);
+        // Emulation of long 
+        for (int i = 0; i < 10; i++)
+        {
+            token.ThrowIfCancellationRequested();
+            await Task.Delay(TimeSpan.FromSeconds(1), token);
+        }
 
         DirectoryDiff? diff = new ();
 
         var currentSnapshot = snapshotService.From(directory).ToArray();
-        if (_cache.TryGetValue(directory.FullName, out var prevSnapshot))
+        if (TryGetValue(directory.FullName, out var prevSnapshot))
         {
             CreateDiff(diff, prevSnapshot, currentSnapshot);
         }
 
-        _cache[directory.FullName] = currentSnapshot;
+        this[directory.FullName] = currentSnapshot;
 
         return await Task.FromResult<DirectoryDiff>(diff);
     }
 
     private void CreateDiff(DirectoryDiff diff, FileSystemItem[] prevSnapshot, FileSystemItem[] currentSnapshot)
     {
+        
         var newItems = GetNewFileSystemItem(prevSnapshot, currentSnapshot).ToArray();
         var deletedItems = GetDeletedFileSystemItem(prevSnapshot, currentSnapshot).ToArray();
 
