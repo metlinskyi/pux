@@ -2,6 +2,9 @@
 
 A small .NET application for directory snapshotting and diff calculations.
 
+
+
+
 ## Requirements
 
 - .NET 10 SDK
