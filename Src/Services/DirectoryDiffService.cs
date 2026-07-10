@@ -6,7 +6,12 @@ internal class DirectoryDiffService(ISnapshotService snapshotService) : IDirecto
     private readonly ConcurrentDictionary<string, FileSystemItem[]> _cache = new ();
 
     public async Task<DirectoryDiff> GetDirectoryDiffAsync(DirectoryInfo directory, CancellationToken token)
-    {        
+    {    
+        if(new Random().Next(100) <= 50 ? true : false)
+        {
+            throw new Exception("Opps!");
+        }
+
         // Emulation of long process
         await Task.Delay(TimeSpan.FromSeconds(10), token);
 

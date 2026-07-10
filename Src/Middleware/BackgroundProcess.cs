@@ -7,9 +7,10 @@ internal class BackgroundProcess(
     private TimeSpan delay = TimeSpan.FromMilliseconds(500);
     public async Task WaitForAsync(Guid id, CancellationToken token)
     {
-        var context = accessor.HttpContext ?? throw new InvalidOperationException("HttpContext is not available.");
+        var context = accessor.HttpContext 
+            ?? throw new InvalidOperationException("HttpContext is not available.");
 
-        logger.LogInformation($"TryGet({id})");
+        logger.LogInformation("TryGet({id})", id);
         if (!tasks.TryGet(id, out BackgroundTask task))
         {
             context.Response.StatusCode = StatusCodes.Status404NotFound;
@@ -19,19 +20,17 @@ internal class BackgroundProcess(
 
         context.Response.StatusCode = StatusCodes.Status200OK;
         context.Response.ContentType = "application/json";
+        context.Response.Headers.Append("X-Accel-Buffering", "no");
         context.Response.Headers.Append("Content-Type", "text/event-stream");
         context.Response.Headers.Append("Cache-Control", "no-cache");
 
-        CancellationToken reset = new();
-        while (task.IsCompleted() == false)
-        {
-            await context.Response.WriteAsync(" ", reset);
-            await context.Response.Body.FlushAsync(reset);
-            await Task.Delay(delay,reset);
+        while (task.Task.IsCompleted == false)
+        {           
+            await context.SendEvent("progress", task.Progress.ToString());
+            await Task.Delay(delay);
         }
 
-        string json = task.JsonResult();
-        await context.Response.WriteAsync(json);
+        await context.SendEvent("result", task.ToString());
 
         tasks.TryRemove(id);
     }   
@@ -39,7 +38,7 @@ internal class BackgroundProcess(
     public Guid Allocate<T>(Task<T> task)
     {
         Guid id = Guid.NewGuid();
-        logger.LogInformation($"TryAdd({id})");
+        logger.LogInformation("TryAdd({id})", id);
         if (tasks.TryAdd(id, new BackgroundTask<T>(task)))
             return id;  
 

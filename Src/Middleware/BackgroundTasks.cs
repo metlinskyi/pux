@@ -4,7 +4,7 @@ internal class BackgroundTasks : ConcurrentDictionary<Guid, BackgroundTask>, IBa
 {
     public bool TryGet(Guid id, out BackgroundTask task)
     {
-        return TryGetValue(id, out task);
+        return TryGetValue(id, out task!);
     }
 
     public bool TryRemove(Guid id)

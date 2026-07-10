@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-public static class Directory
+public static class DirectoryEndpoints
 {
     public static void MapDirectoryEndpoints(this WebApplication app)
     {
@@ -16,7 +16,7 @@ public static class Directory
 
             var id = background.Allocate(service.GetDirectoryDiffAsync(directory, ct));
             
-            return Results.RedirectToRoute("GetBackgroundResult", new { id });
+            return Results.Accepted($"/background/result/{id}", new { Id = id });
         });
 
         app.MapPost("/directory/diff/sync", async (

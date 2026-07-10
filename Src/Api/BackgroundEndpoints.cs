@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-public static class Background
+public static class BackgroundEndpoints
 {
     public static void MapBackgroundEndpoints(this WebApplication app)
     {
@@ -10,7 +10,14 @@ public static class Background
             CancellationToken ct) =>
         {
             await background.WaitForAsync(id, ct);
-        })
-        .WithName("GetBackgroundResult");
+        });
+
+        app.MapGet("/background/progress/{id}", async (
+            [FromRoute]Guid id, 
+            [FromServices]IBackgroundProcess background,
+            CancellationToken ct) =>
+        {
+            await background.WaitForAsync(id, ct);
+        });
     }
 }

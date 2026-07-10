@@ -11,7 +11,11 @@ document.addEventListener("DOMContentLoaded", () => {
             new FormData(event.target).forEach(function(value, key){
                 payload[key] = value;
             });
+
+            form.querySelectorAll(".state").forEach(e => e.remove());
+
             try {
+
                 const response = await fetch(endpoint, {
                     headers: {
                         "Content-Type": "application/json"
@@ -19,9 +23,47 @@ document.addEventListener("DOMContentLoaded", () => {
                     method: event.target.method.toUpperCase(),
                     body: JSON.stringify(payload),
                 });
-                console.log(await response.json());
+
+                if(response.status === 202)
+                {
+                    const progress = document.createElement("progress");
+                    progress.className = "state";
+                    progress.max = 100;
+                    form.appendChild(progress);
+
+                    const statusUrl = response.headers.get('location');
+                    const es = new EventSource(statusUrl);
+                    es.addEventListener('progress', (event) => {
+                        const data = JSON.parse(event.data);
+                        console.log(data);
+                        progress.value = data.Value;
+                    });
+                    es.addEventListener('result', (event) => {
+                        const data = JSON.parse(event.data);
+                        console.log(data);
+                        es.close();
+                        progress.remove();
+                    });
+                }
+                if(response.status === 200)
+                {
+                    response.json().then(data => {
+                        const er = document.createElement("div")
+                        er.className = "state";
+                        er.innerText = data;
+                        form.appendChild(er);
+                    });
+                }
+                else
+                {
+                    const er = document.createElement("div")
+                    er.className = "state";
+                    er.innerText = response.statusText;
+                    form.appendChild(er);
+                }
+
             } catch (e) {
-                console.log(e);
+                console.error(e);
             }
             return false;
         }));
@@ -34,6 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <input type="text" name="Path" value="/Web" />
         <input type="submit"/>
     </form>
+</progress>
 </fieldset>
 
 <fieldset>
