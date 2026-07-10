@@ -1,7 +1,7 @@
 # PUX
 
 
-[![How it works](https://raw.githubusercontent.com/metlinskyi/pux/main/screenshot.png)](https://raw.githubusercontent.com/metlinskyi/pux/main/video.mp4)
+[![How it works](https://raw.githubusercontent.com/metlinskyi/pux/main/screenshot.png)](https://raw.githubusercontent.com/metlinskyi/pux/main/demo.mp4)
 
 
 ## Requirements
