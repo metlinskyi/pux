@@ -1,8 +1,7 @@
 # PUX
 
-A small .NET application for directory snapshotting and diff calculations.
 
-
+[![How it works]](https://github.com/metlinskyi/pux/raw/refs/heads/main/demo.webm)
 
 
 ## Requirements
