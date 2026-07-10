@@ -11,13 +11,5 @@ public static class BackgroundEndpoints
         {
             await background.WaitForAsync(id, ct);
         });
-
-        app.MapGet("/background/progress/{id}", async (
-            [FromRoute]Guid id, 
-            [FromServices]IBackgroundProcess background,
-            CancellationToken ct) =>
-        {
-            await background.WaitForAsync(id, ct);
-        });
     }
 }
