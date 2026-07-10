@@ -1,7 +1,7 @@
 # PUX
 
 
-[![How it works]](https://github.com/metlinskyi/pux/raw/refs/heads/main/demo.webm)
+[![How it works](https://github.com/metlinskyi/pux/raw/refs/heads/main/screenshot.png)](https://github.com/metlinskyi/pux/raw/refs/heads/main/demo.webm)
 
 
 ## Requirements
