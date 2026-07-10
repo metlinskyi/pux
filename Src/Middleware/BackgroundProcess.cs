@@ -12,7 +12,7 @@ internal class BackgroundProcess(
             ?? throw new InvalidOperationException("HttpContext is not available.");
 
         logger.LogInformation("TryGet({id})", id);
-        if (!this.TryGetValue(id, out var task))
+        if (!TryGetValue(id, out var task))
         {
             context.Response.StatusCode = StatusCodes.Status404NotFound;
             await context.Response.Body.FlushAsync(token);
@@ -33,7 +33,7 @@ internal class BackgroundProcess(
 
         await context.SendEvent("result", task.ToString());
 
-        this.TryRemove(id, out _);
+        TryRemove(id, out _);
     }   
 
     public Guid Allocate<T>(Task<T> task)
