@@ -1,5 +1,3 @@
-using System.Text.Json;
-
 public static class EventSourceHelper
 {
     public static async Task SendEvent(this HttpContext context, string @event, string? data)

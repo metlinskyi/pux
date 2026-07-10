@@ -1,8 +1,9 @@
+using System.Collections.Concurrent;
+
 internal class BackgroundProcess(
     ILogger<BackgroundProcess> logger,
-    IBackgroundTasks tasks, 
     IHttpContextAccessor accessor
-    ) : IBackgroundProcess
+    ) : ConcurrentDictionary<Guid, BackgroundTask>, IBackgroundProcess
 {
     private TimeSpan delay = TimeSpan.FromMilliseconds(500);
     public async Task WaitForAsync(Guid id, CancellationToken token)
@@ -11,7 +12,7 @@ internal class BackgroundProcess(
             ?? throw new InvalidOperationException("HttpContext is not available.");
 
         logger.LogInformation("TryGet({id})", id);
-        if (!tasks.TryGet(id, out BackgroundTask task))
+        if (!this.TryGetValue(id, out var task))
         {
             context.Response.StatusCode = StatusCodes.Status404NotFound;
             await context.Response.Body.FlushAsync(token);
@@ -32,14 +33,14 @@ internal class BackgroundProcess(
 
         await context.SendEvent("result", task.ToString());
 
-        tasks.TryRemove(id);
+        this.TryRemove(id, out _);
     }   
 
     public Guid Allocate<T>(Task<T> task)
     {
         Guid id = Guid.NewGuid();
         logger.LogInformation("TryAdd({id})", id);
-        if (tasks.TryAdd(id, new BackgroundTask<T>(task)))
+        if (TryAdd(id, new BackgroundTask<T>(task)))
             return id;  
 
         throw new Exception("Task was not allocate!");

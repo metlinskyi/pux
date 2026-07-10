@@ -7,7 +7,6 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions {
 builder.Services.AddOpenApi();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IBackgroundProcess, BackgroundProcess>();
-builder.Services.AddSingleton<IBackgroundTasks, BackgroundTasks>();
 builder.Services.AddSingleton<IDirectoryDiffService, DirectoryDiffService>();
 builder.Services.AddTransient<ISnapshotService, SnapshotService>();
 builder.Services.AddCors(___ => {
